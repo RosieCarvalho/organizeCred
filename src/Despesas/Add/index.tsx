@@ -7,6 +7,7 @@ import Button from "../../components/Button";
 import { InputForm } from "../../components/InputForm";
 import Label from "../../components/Label";
 import { useDespesas } from "../../hooks/despesas";
+import { useCards } from "../../hooks/cards";
 
 interface dataCard {
   tipo: string;
@@ -16,12 +17,14 @@ interface dataCard {
 
 interface Props {
   cardId: number;
+  amountSpent: number;
 }
 
-export default function AddDespesa({ cardId }: Props) {
+export default function AddDespesa({ cardId, amountSpent }: Props) {
   const { despesaAdd } = useDespesas();
+  const { updateCard } = useCards();
   const navigation = useNavigation();
-  const [selectedTipo, setSelectedTipo] = useState("nu");
+  const [selectedTipo, setSelectedTipo] = useState("Comida");
   const {
     control,
     handleSubmit,
@@ -39,6 +42,10 @@ export default function AddDespesa({ cardId }: Props) {
     console.log("data", dataItem);
 
     despesaAdd(dataItem);
+    updateCard({
+      object_id: String(cardId),
+      amount_spent: amountSpent - data.value,
+    });
     navigation.goBack();
   }
   return (

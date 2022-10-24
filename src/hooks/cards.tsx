@@ -8,13 +8,16 @@ interface AuthProviderProps {
 interface IAuthContextData {
   cards: Parse.Object<resultCards>[];
   addCard: (data: dataCard) => Promise<void>;
+  updateCard: (data: dataCard) => Promise<void>;
   listCards: () => Promise<void>;
 }
 
 interface dataCard {
-  name: string;
-  value_max: number;
-  day_closure: number;
+  name?: string;
+  value_max?: number;
+  day_closure?: number;
+  amount_spent?: number;
+  object_id?: string;
 }
 interface resultCards {
   name: string;
@@ -48,7 +51,20 @@ function AuthProvider({ children }: AuthProviderProps) {
       newCard.set("color", color);
       newCard.set("value_max", Number(data.value_max));
       newCard.set("day_closure", Number(data.day_closure));
+      newCard.set("amount_spent", Number(data.value_max));
 
+      await newCard.save();
+    } catch (error) {
+      console.log("Error saving new person: ", error);
+    }
+  }
+
+  async function updateCard(data: dataCard) {
+    try {
+      const newCard = new Parse.Object("cards");
+      newCard.set("objectId", data.object_id);
+      newCard.set("amount_spent", Number(data.amount_spent));
+      console.log("update", newCard);
       await newCard.save();
     } catch (error) {
       console.log("Error saving new person: ", error);
@@ -69,7 +85,9 @@ function AuthProvider({ children }: AuthProviderProps) {
   }
 
   return (
-    <AuthContext.Provider value={{ cards: cards, addCard: addCard, listCards }}>
+    <AuthContext.Provider
+      value={{ cards: cards, addCard: addCard, listCards, updateCard }}
+    >
       {children}
     </AuthContext.Provider>
   );

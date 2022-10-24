@@ -13,7 +13,7 @@ export default function Despesas({ route }) {
   const { listDespesas, despesas } = useDespesas();
 
   useEffect(() => {
-    // listDespesas(cardId);
+    listDespesas(cardId);
   }, []);
 
   const recomendDay = () => {
@@ -41,16 +41,16 @@ export default function Despesas({ route }) {
             <Card>
               <Bloco>
                 <Label text={"gasto"} fontSize={12} marginVertical={8} />
-                <Label text={formatMoney(amountSpent)} fontSize={15} />
+                <Label
+                  text={formatMoney(valueMax - amountSpent)}
+                  fontSize={15}
+                />
               </Bloco>
             </Card>
             <Card>
               <Bloco>
                 <Label text={"restante"} fontSize={12} marginVertical={8} />
-                <Label
-                  text={formatMoney(valueMax - amountSpent)}
-                  fontSize={15}
-                />
+                <Label text={formatMoney(amountSpent)} fontSize={15} />
               </Bloco>
             </Card>
           </View>
@@ -83,7 +83,7 @@ export default function Despesas({ route }) {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
       >
-        <AddDespesa cardId={cardId} />
+        <AddDespesa cardId={cardId} amountSpent={amountSpent} />
       </ModalComponent>
     </>
   );

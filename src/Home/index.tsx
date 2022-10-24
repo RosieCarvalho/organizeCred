@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { FlatList, Text, View } from "react-native";
+import { Dimensions, FlatList, Text, View } from "react-native";
 import FabButton from "../components/FabButton";
 import { Card } from "../components/Card";
 import Label from "../components/Label";
@@ -8,17 +8,25 @@ import { useNavigation } from "@react-navigation/native";
 import { useCards } from "../hooks/cards";
 import { differenceInDays } from "date-fns";
 import { formatMoney } from "../utils/formatMoney";
-import VerticalBarGraph from "@chartiful/react-native-vertical-bar-graph";
+import { BarChart } from "react-native-chart-kit";
 
 export default function Home() {
-  const { listCards, cards } = useCards();
-  const config = {
-    hasXAxisBackgroundLines: false,
-    xAxisLabelStyle: {
-      position: "right",
-      prefix: "$",
-    },
+  const chartConfig = {
+    backgroundColor: "#fff",
+    backgroundGradientFrom: "#fff",
+    backgroundGradientTo: "#fff",
+    color: (opacity = 1) => `rgba(200, 0, 0, ${opacity})`,
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
   };
+  const data = {
+    labels: ["Inter", "Nu", "BB", "Ame"],
+    datasets: [
+      {
+        data: [100, 200, 300, 150],
+      },
+    ],
+  };
+  const { listCards, cards } = useCards();
 
   const navigation = useNavigation();
   useEffect(() => {
@@ -39,27 +47,29 @@ export default function Home() {
   return (
     <>
       <Container>
-        <View>
-          <VerticalBarGraph
-            data={[20, 45, 28, 80, 99, 43, 50]}
-            labels={["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"]}
-            width={375}
-            height={300}
-            barRadius={5}
-            barWidthPercentage={0.65}
-            baseConfig={config}
+        <View style={{ marginBottom: 40 }}>
+          <BarChart
             style={{
-              marginBottom: 30,
-              padding: 10,
-              paddingTop: 20,
-              borderRadius: 20,
-              backgroundColor: "green",
-              width: 375,
+              marginHorizontal: 10,
+              marginVertical: 8,
+              borderRadius: 16,
+              backgroundColor: "#fff",
             }}
+            data={data}
+            // yAxisLabel={"-"}
+            width={Dimensions.get("window").width - 50}
+            // yAxisSuffix={"-"}
+            height={220}
+            chartConfig={chartConfig}
           />
         </View>
         <FlatList
           data={cards}
+          ListHeaderComponent={
+            <View style={{ marginHorizontal: 18 }}>
+              <Label text={"Cartões"} fontSize={20} />
+            </View>
+          }
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
