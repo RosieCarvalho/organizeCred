@@ -4,8 +4,19 @@ import Routes from "./src/routes";
 import Parse from "parse/react-native.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppProvider } from "./src/hooks";
-import { Platform } from "react-native";
-import Constants from "expo-constants";
+import { Amplify } from "aws-amplify";
+import { ApolloProvider } from "react-apollo";
+import AWSAppSyncClient from "aws-appsync";
+import awsconfig from "./src/aws-exports";
+
+const appSyncClient = new AWSAppSyncClient({
+  url: awsconfig.aws_appsync_graphqlEndpoint,
+  region: awsconfig.aws_appsync_region,
+  auth: {
+    type: "API_KEY",
+    apiKey: awsconfig.aws_appsync_apiKey,
+  },
+});
 
 export default function App() {
   Parse.setAsyncStorage(AsyncStorage);
@@ -18,9 +29,11 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <AppProvider>
-        <Routes />
-      </AppProvider>
+      <ApolloProvider client={appSyncClient}>
+        <AppProvider>
+          <Routes />
+        </AppProvider>
+      </ApolloProvider>
     </>
   );
 }

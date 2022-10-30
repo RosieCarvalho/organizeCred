@@ -9,6 +9,8 @@ import { useCards } from "../hooks/cards";
 import { differenceInDays } from "date-fns";
 import { formatMoney } from "../utils/formatMoney";
 import { BarChart } from "react-native-chart-kit";
+import { DataStore } from "aws-amplify";
+import { Todo } from "./models";
 
 export default function Home() {
   const chartConfig = {
@@ -29,8 +31,17 @@ export default function Home() {
   const { listCards, cards } = useCards();
 
   const navigation = useNavigation();
+
+  const addCard = async () => {
+    await DataStore.save(new Todo({ name: "teste", description: "teste" }))
+      .then((res) => console.log("res", res))
+      .catch((err) => console.log("er", err));
+  };
+
   useEffect(() => {
     listCards();
+    //testar o add
+    addCard();
   }, []);
 
   function diasRestantes(dayClosure: number) {
