@@ -1,5 +1,6 @@
 # organizeCred
-app para organização financeira. 
+app para organização financeira.  
+Projeto ainda em construção
 
 # USO 
 - react-native expo
